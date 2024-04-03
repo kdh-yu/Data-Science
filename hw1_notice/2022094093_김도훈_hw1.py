@@ -14,10 +14,11 @@ def candidate(I: list, k: int):
     return lst
 
 # Apriori
-def apriori(DB, min_sup):
+def apriori(DB: list, min_sup: int):
     min_sup = min_sup * len(DB) / 100
     L = {}
     C = {}
+    # L1
     L[1] = {}
     for transaction in DB:
         item = {i : transaction.count(i) for i in transaction}
@@ -39,6 +40,7 @@ def apriori(DB, min_sup):
                         C[k+1][intersect] = 0
                     C[k+1][intersect] += 1
         L[k+1] = {i[0] : i[1] for i in C[k+1].items() if i[1]>=min_sup}
+        # Pruning
         ref = list(L[k+1].keys())
         k += 1
     l = {}
@@ -47,20 +49,14 @@ def apriori(DB, min_sup):
     return l
 
 # Union operation from L_1 to L_k
-def union(D):
+def union(D: dict):
     res = {}
     for key, value in D.items():
-        flag = True
-        for k in D.keys():
-            if key!=k and set(key).issubset(k):
-                flag = False
-                break
-        if flag:
-            res[key] = value
+        res[key] = value
     return res
         
 # Calculate support and confidence
-def supconf(D, ref, n):
+def supconf(D: dict, ref: dict, n: int):
     output = {}
     for key, cnt in D.items():
         for i in range(1, len(key)):
